@@ -1,19 +1,13 @@
 package InputStream_OutputStream;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Properties;
-import java.util.Scanner;
 
 public class Arquivo {
 
@@ -31,30 +25,35 @@ public class Arquivo {
 		String caminho2 = prop.getProperty("caminho2");
 		System.out.println(caminho2);
 
-		byte[] bytes = inputReal(caminho1);
-		outputReal(caminho2, bytes);
+		byte[] bytes = input(caminho1);
+		output(caminho2, bytes);
 
 	}
 
 	@SuppressWarnings("null")
-	public static byte[] inputReal(String caminho) {
+	public static byte[] input(String caminho) {
 		InputStream inputstream;
 		try {
+
 			inputstream = new FileInputStream(caminho);
+			byte[] lista = new byte[0];
+			byte bytes = (byte) inputstream.read();
 
-			byte[] bytes = new byte[1];
-			byte data = (byte) inputstream.read();
-			bytes[bytes.length] = data;
+			while (bytes != -1) {
+				// ----ler int
+				// System.out.println("Int: "+String.valueOf(bytesInt));
+				// ----ler converter int para string
+				// bytesString +=String.valueOf(bytesInt);
 
-			while (data != -1) {
-				System.out.println(data);
-
-				data = (byte) inputstream.read();
-				bytes[bytes.length] = data;
+				byte[] novaLista = new byte[lista.length + 1];
+				System.arraycopy(lista, 0, novaLista, 0, lista.length);
+				lista = novaLista;
+				lista[lista.length - 1] = bytes;
+				bytes = (byte) inputstream.read();
 			}
 
 			inputstream.close();
-			return bytes;
+			return lista;
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return null;
@@ -64,63 +63,14 @@ public class Arquivo {
 		}
 	}
 
-	public static void output(String caminho2) throws IOException {
-		OutputStream fos = new FileOutputStream(caminho2);
-		Writer osw = new OutputStreamWriter(fos);
-		BufferedWriter bw = new BufferedWriter(osw);
-
-		bw.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod");
-		bw.newLine();
-		bw.newLine();
-		bw.write("asfasdfsafdas dfs sdf asf assdﬂ");
-
-		bw.close();
-	}
-
-	public static void outputReal(String caminho2, byte[] bytess) throws IOException {
+	public static void output(String caminho2, byte[] bytes) throws IOException {
 
 		final String NOME_ARQUIVO = "escrita.txt";
 		File meuArquivo = new File(caminho2, NOME_ARQUIVO);
-
 		@SuppressWarnings("resource")
 		OutputStream outputStream = new FileOutputStream(meuArquivo);
-
-		byte[] bytes = { 104, 111, 114, 117, 127 };// m·ximo 127
-
 		outputStream.write(bytes);
 
-	}
-
-	public static void scanner() throws IOException {
-		Scanner scanner = new Scanner(new File("lorem2.txt"));
-		while (scanner.hasNextLine()) {
-			String linhas = scanner.nextLine();
-			System.out.println(linhas);
-		}
-
-		scanner.close();
-	}
-
-	public static void filewrite() throws IOException {
-
-		FileWriter fw = new FileWriter("lorem2.txt");
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write("teste escrita");
-		bw.newLine();
-		bw.newLine();
-		bw.write("escreveu");
-
-		bw.close();
-	}
-
-	public static void printWrite() throws IOException {
-		PrintWriter ps = new PrintWriter("lorem2.txt");
-
-		ps.println("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod");
-		ps.println();
-		ps.println("imprime");
-
-		ps.close();
 	}
 
 }
